@@ -3,6 +3,7 @@ require 'open-uri'
 WIKIPEDIA_DOMAIN = 'http://en.wikipedia.org'
 
 class Page
+  attr_accessor :heading, :abstract, :links
 
   def initialize resource
     @resource = resource
