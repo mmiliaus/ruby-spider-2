@@ -37,7 +37,7 @@ class Page
 
 end
 
-args = ARGV
+args = ARGV.clone
 params = {}
 while !args.empty?
   flag = args.shift.gsub(/\A-/,'')
