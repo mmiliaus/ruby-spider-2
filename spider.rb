@@ -1,8 +1,22 @@
+# This script scrapes requested information from a Wikipedia page
+#
+# Data that can be scraped:
+# * Article heading;
+# * Abstract;
+# * Links.
+#
+# Example script usage:
+# ruby spider.rb -r Niels_Bohr
+
+
+
 require 'open-uri'
 
 WIKIPEDIA_DOMAIN = 'http://en.wikipedia.org'
 
 module Wikipedia
+
+  # A mixin of methods used for filtering URLs, based on regex patterns
   module Filters
     def take_links filters, links
       filtered_links = links
@@ -36,6 +50,7 @@ module Wikipedia
     end
   end
 
+  # Represents Wikipedia page
   class Page
 
     attr_accessor :heading, :abstract, :links
@@ -75,6 +90,7 @@ module Wikipedia
   end
 end
 
+# parse CLI parameters
 args = ARGV.clone
 params = {}
 while !args.empty?
@@ -83,15 +99,19 @@ while !args.empty?
   params[flag] = flag_val
 end
 
+# resource parameter is mandatory
 if !params.include?(:r)
   puts %Q(Please provide resource name, i.e.: "Spacex", "V_for_vendetta")
   exit
 end
 
+# fetch data from a Wikipedia page
 wp = Wikipedia::Page.new params[:r]
 wp.download.get_data
 f_links = Wikipedia::Page.take_links(
                 [:without_hash_tag, :relative],
                 wp.links
           ) { |url| not url.match(/(wiki|w)\/.+:.+/) }
+
+# output filtered links
 puts f_links
